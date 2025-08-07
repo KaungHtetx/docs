@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet App News Prototype</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+        }
+
+        /* Home Screen */
+        #home-screen {
+            display: block;
+        }
+
+        .header {
+            padding: 16px;
+            background-color: #0056b3; /* MO.com.mm brand blue */
+            color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .card-section {
+            padding: 20px;
+        }
+
+        .banner-card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .banner-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .banner-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .banner-content {
+            padding: 16px;
+        }
+
+        .banner-content h3 {
+            color: #0056b3; /* MO.com.mm brand blue */
+            margin-bottom: 8px;
+        }
+
+        .banner-content p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* News Features Screen */
+        #news-features {
+            display: none;
+        }
+
+        .news-header {
+            padding: 16px;
+            background-color: #0056b3; /* MO.com.mm brand blue */
+            color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+        }
+
+        .news-header h1 {
+            font-size: 24px;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .categories {
+            display: flex;
+            overflow-x: auto;
+            padding: 16px;
+            gap: 8px;
+            white-space: nowrap;
+            scrollbar-width: none;
+            background-color: white;
+        }
+
+        .categories::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-chip {
+            padding: 8px 16px;
+            background-color: #e0e0e0;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .category-chip.selected {
+            background-color: #0056b3; /* MO.com.mm brand blue */
+            color: #fff;
+        }
+
+        .news-list {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .news-card {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .news-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .news-card h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .news-card .meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .news-card .category-chip {
+            background-color: #0056b3; /* MO.com.mm brand blue */
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 12px;
+        }
+
+        /* News Detail Screen */
+        #news-detail {
+            display: none;
+        }
+
+        .detail-header {
+            position: relative;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: flex-end;
+            padding: 16px;
+            color: #fff;
+        }
+
+        .detail-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .detail-header h1 {
+            position: relative;
+            font-size: 24px;
+            z-index: 1;
+            max-width: 80%;
+        }
+
+        .back-arrow {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1;
+            color: #fff;
+        }
+
+        .detail-content {
+            padding: 16px;
+            background-color: #fff;
+        }
+
+        .detail-content .meta {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .detail-content p {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <!-- Home Screen -->
+    <div id="home-screen">
+        <div class="header">
+            <h1>MO Wallet</h1>
+        </div>
+        <div class="card-section">
+            <div class="banner-card" onclick="showScreen('news-features')">
+                <img src="https://thumbs.dreamstime.com/b/newsletter-banner-speech-bubble-label-sticker-sign-template-ribbon-365300091.jpg" alt="News Banner" class="banner-image">
+                <div class="banner-content">
+                    <h3>Latest Financial News</h3>
+                    <p>Stay updated with the latest market trends and financial insights</p>
+                </div>
+            </div>
+            <!-- Additional cards can be added here -->
+            <div class="banner-card" style="background-color: #0056b3; color: white;">
+                <div class="banner-content">
+                    <h3 style="color: white;">Your Account Summary</h3>
+                    <p style="color: rgba(255,255,255,0.8);">View your current balance and transactions</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- News Features Screen -->
+    <div id="news-features">
+        <div class="news-header">
+            <span class="back-arrow" onclick="showScreen('home-screen')">&#8592;</span>
+            <h1>News</h1>
+        </div>
+        <div class="categories">
+            <div class="category-chip selected" onclick="filterNews('All')">All</div>
+            <div class="category-chip" onclick="filterNews('Finance')">Finance</div>
+            <div class="category-chip" onclick="filterNews('Crypto')">Crypto</div>
+            <div class="category-chip" onclick="filterNews('Markets')">Markets</div>
+            <div class="category-chip" onclick="filterNews('Technology')">Technology</div>
+            <div class="category-chip" onclick="filterNews('Myanmar')">Myanmar</div>
+            <div class="category-chip" onclick="filterNews('Banking')">Banking</div>
+        </div>
+        <div class="news-list" id="news-list">
+            <!-- News cards will be populated here -->
+        </div>
+    </div>
+
+    <!-- News Detail Screen -->
+    <div id="news-detail">
+        <div class="detail-header" id="detail-header">
+            <span class="back-arrow" onclick="showScreen('news-features')">&#8592;</span>
+            <h1 id="detail-title"></h1>
+        </div>
+        <div class="detail-content">
+            <div class="meta">
+                <span id="detail-date"></span>
+                <span class="category-chip" id="detail-category"></span>
+            </div>
+            <p id="detail-body"></p>
+        </div>
+    </div>
+
+    <script>
+        // Expanded mock news data with Myanmar financial news and March themes
+        const newsData = [
+            {
+                id: 1,
+                title: "Bitcoin Surges to New Highs Amid Institutional Investments",
+                date: "Aug 07, 2025",
+                category: "Crypto",
+                body: "Bitcoin has soared to new highs, driven by increased institutional investments and positive market sentiment. Major firms are allocating significant capital to BTC, boosting its value and mainstream adoption.",
+                image: "https://via.placeholder.com/400x200?text=Bitcoin+Rally"
+            },
+            {
+                id: 2,
+                title: "Stock Market Trends for 2025: What Investors Need to Know",
+                date: "Aug 06, 2025",
+                category: "Markets",
+                body: "Analysts predict a mixed outlook for global stock markets in 2025, with tech and green energy sectors leading growth. Investors are advised to diversify portfolios to mitigate volatility risks.",
+                image: "https://via.placeholder.com/400x200?text=Stock+Market"
+            },
+            {
+                id: 3,
+                title: "New Fintech Regulations to Impact Digital Banking",
+                date: "Aug 05, 2025",
+                category: "Finance",
+                body: "Governments worldwide are rolling out stricter fintech regulations to enhance consumer protection and ensure financial stability. Digital banks face new compliance challenges.",
+                image: "https://via.placeholder.com/400x200?text=Fintech"
+            },
+            {
+                id: 4,
+                title: "Ethereum Marks 10 Years: What's Next for the Network",
+                date: "Aug 06, 2025",
+                category: "Crypto",
+                body: "Celebrating a decade of innovation, Ethereum continues to evolve with new upgrades aimed at scalability and sustainability. Developers are optimistic about its future in DeFi and NFTs.",
+                image: "https://via.placeholder.com/400x200?text=Ethereum"
+            },
+            {
+                id: 5,
+                title: "European Stocks Edge Higher with Earnings in Focus",
+                date: "Aug 06, 2025",
+                category: "Markets",
+                body: "European stock markets saw modest gains as investors digested corporate earnings and monitored global trade developments. Key sectors like automotive and energy showed resilience.",
+                image: "https://via.placeholder.com/400x200?text=European+Stocks"
+            },
+            {
+                id: 6,
+                title: "Banco BPM Profit Beats Forecasts After Strategic Moves",
+                date: "Aug 05, 2025",
+                category: "Finance",
+                body: "Banco BPM reported stronger-than-expected profits, boosted by its acquisition of Anima and strategic cost-cutting measures, despite challenges in the banking sector.",
+                image: "https://via.placeholder.com/400x200?text=Banking"
+            },
+            {
+                id: 7,
+                title: "AI Accounting Startup Rillet Raises $70M in Funding",
+                date: "Aug 05, 2025",
+                category: "Technology",
+                body: "Rillet, an AI-powered accounting platform, secured $70 million in Series B funding to expand its innovative solutions for small businesses and enterprises.",
+                image: "https://via.placeholder.com/400x200?text=AI+Tech"
+            },
+            {
+                id: 8,
+                title: "Nintendo Switch 2 Released: A New Era for Gaming",
+                date: "Aug 06, 2025",
+                category: "Technology",
+                body: "Nintendo launched the Switch 2 globally, featuring enhanced graphics and cloud gaming capabilities, setting a new benchmark for portable gaming consoles.",
+                image: "https://via.placeholder.com/400x200?text=Gaming"
+            },
+            {
+                id: 9,
+                title: "Solana Outperforms Competitors in DeFi Growth",
+                date: "Aug 04, 2025",
+                category: "Crypto",
+                body: "Solana's blockchain has seen rapid adoption in decentralized finance, with transaction speeds and low costs attracting developers and investors alike.",
+                image: "https://via.placeholder.com/400x200?text=Solana"
+            },
+            {
+                id: 10,
+                title: "Global Markets Brace for Volatility Amid Policy Shifts",
+                date: "Aug 04, 2025",
+                category: "Markets",
+                body: "Uncertainty over monetary policy changes has led to increased volatility in global markets, with investors closely watching central bank decisions.",
+                image: "https://via.placeholder.com/400x200?text=Global+Markets"
+            },
+            // Myanmar financial news
+            {
+                id: 11,
+                title: "Myanmar's Central Bank Announces New Forex Regulations",
+                date: "Mar 15, 2025",
+                category: "Myanmar",
+                body: "The Central Bank of Myanmar has introduced new foreign exchange regulations to stabilize the kyat and control inflation. Businesses are adjusting to the new requirements for foreign currency transactions.",
+                image: "https://via.placeholder.com/400x200?text=Myanmar+Banking"
+            },
+            {
+                id: 12,
+                title: "Yangon Stock Exchange Sees Record Trading Volume",
+                date: "Mar 12, 2025",
+                category: "Myanmar",
+                body: "The Yangon Stock Exchange reported its highest trading volume in history as local investors show increased interest in equity markets following economic reforms.",
+                image: "https://via.placeholder.com/400x200?text=Yangon+Stock+Exchange"
+            },
+            {
+                id: 13,
+                title: "Mobile Payment Adoption Soars in Myanmar",
+                date: "Mar 10, 2025",
+                category: "Finance",
+                body: "Mobile payment platforms in Myanmar have seen 300% growth year-over-year as digital financial services become more accessible across the country, even in rural areas.",
+                image: "https://via.placeholder.com/400x200?text=Mobile+Payments"
+            },
+            {
+                id: 14,
+                title: "Myanmar's Rice Export Earnings Reach $1 Billion",
+                date: "Mar 08, 2025",
+                category: "Myanmar",
+                body: "Myanmar's rice exports have generated over $1 billion in revenue this fiscal year, with China and African countries being the largest importers of Myanmar rice.",
+                image: "https://via.placeholder.com/400x200?text=Rice+Exports"
+            },
+            // March themes
+            {
+                id: 15,
+                title: "Spring Market Rally: What to Expect in Q2 2025",
+                date: "Mar 01, 2025",
+                category: "Markets",
+                body: "Historically, March marks the beginning of a spring rally in financial markets. Analysts examine sector performance trends and potential opportunities for investors in the coming quarter.",
+                image: "https://via.placeholder.com/400x200?text=Spring+Rally"
+            },
+            {
+                id: 16,
+                title: "Women in Finance: Breaking Barriers in 2025",
+                date: "Mar 08, 2025",
+                category: "Finance",
+                body: "For International Women's Day, we highlight the growing influence of women in Myanmar's financial sector and their contributions to economic development.",
+                image: "https://via.placeholder.com/400x200?text=Women+in+Finance"
+            },
+            {
+                id: 17,
+                title: "Tax Season Tips for Myanmar Businesses",
+                date: "Mar 15, 2025",
+                category: "Finance",
+                body: "As tax season approaches, financial experts share strategies for Myanmar businesses to optimize their tax filings and take advantage of available incentives.",
+                image: "https://via.placeholder.com/400x200?text=Tax+Season"
+            },
+            {
+                id: 18,
+                title: "CB Bank Launches New Digital Banking Platform",
+                date: "Mar 20, 2025",
+                category: "Banking",
+                body: "CB Bank has introduced a comprehensive digital banking solution with features like instant transfers, bill payments, and investment options, marking a significant step in Myanmar's banking digitalization.",
+                image: "https://via.placeholder.com/400x200?text=CB+Bank"
+            },
+            {
+                id: 19,
+                title: "Myanmar's Gold Prices Hit Record High",
+                date: "Mar 25, 2025",
+                category: "Myanmar",
+                body: "Gold prices in Myanmar have reached unprecedented levels as investors seek safe-haven assets amid economic uncertainty. Local jewelers report increased demand for gold jewelry as both adornment and investment.",
+                image: "https://via.placeholder.com/400x200?text=Gold+Prices"
+            },
+            {
+                id: 20,
+                title: "Agricultural Sector Receives $500M in Financing",
+                date: "Mar 28, 2025",
+                category: "Myanmar",
+                body: "International development partners have committed $500 million to support Myanmar's agricultural sector, focusing on modern farming techniques and supply chain improvements to boost exports.",
+                image: "https://via.placeholder.com/400x200?text=Agriculture"
+            }
+        ];
+
+        // Populate news list
+        function populateNews(category = "All") {
+            const newsList = document.getElementById("news-list");
+            newsList.innerHTML = "";
+            const filteredNews = category === "All" ? newsData : newsData.filter(news => news.category === category);
+
+            filteredNews.forEach(news => {
+                const card = document.createElement("div");
+                card.className = "news-card";
+                card.innerHTML = `
+                    <h3>${news.title}</h3>
+                    <div class="meta">
+                        <span>${news.date}</span>
+                        <span class="category-chip">${news.category}</span>
+                    </div>
+                `;
+                card.onclick = () => showNewsDetail(news.id);
+                newsList.appendChild(card);
+            });
+        }
+
+        // Filter news by category
+        function filterNews(category) {
+            const chips = document.querySelectorAll(".category-chip");
+            chips.forEach(chip => chip.classList.remove("selected"));
+            event.target.classList.add("selected");
+            populateNews(category);
+        }
+
+        // Show news detail screen
+        function showNewsDetail(id) {
+            const news = newsData.find(item => item.id === id);
+            document.getElementById("detail-title").textContent = news.title;
+            document.getElementById("detail-date").textContent = news.date;
+            document.getElementById("detail-category").textContent = news.category;
+            document.getElementById("detail-body").textContent = news.body;
+            document.getElementById("detail-header").style.backgroundImage = `url(${news.image})`;
+            showScreen("news-detail");
+        }
+
+        // Toggle between screens
+        function showScreen(screenId) {
+            document.getElementById("home-screen").style.display = screenId === "home-screen" ? "block" : "none";
+            document.getElementById("news-features").style.display = screenId === "news-features" ? "block" : "none";
+            document.getElementById("news-detail").style.display = screenId === "news-detail" ? "block" : "none";
+            
+            if (screenId === "news-features") {
+                populateNews();
+            }
+        }
+
+        // Initialize
+        showScreen("home-screen");
+    </script>
+</body>
+</html>
